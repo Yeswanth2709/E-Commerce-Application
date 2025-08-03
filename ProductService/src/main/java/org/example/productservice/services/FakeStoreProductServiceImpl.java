@@ -1,5 +1,6 @@
 package org.example.productservice.services;
 
+import org.example.productservice.clients.fakeStore.FakeStoreApiClient;
 import org.example.productservice.configs.RestTemplateConfig;
 import org.example.productservice.dtos.FakeProductServiceDto;
 import org.example.productservice.models.Category;
@@ -7,27 +8,27 @@ import org.example.productservice.models.Product;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class FakeStoreProductServiceImpl implements ProductService{
 
-    private RestTemplate restTemplate;
-
-    public FakeStoreProductServiceImpl(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    private final FakeStoreApiClient fakeStoreApiClient;
+    public FakeStoreProductServiceImpl(FakeStoreApiClient fakeStoreApiClient) {
+        this.fakeStoreApiClient = fakeStoreApiClient;
     }
 
     @Override
     public Product getProductById(long id) {
-        FakeProductServiceDto productDto =restTemplate.getForObject("https://fakestoreapi.com/products/" + id, FakeProductServiceDto.class);
+        FakeProductServiceDto productDto=fakeStoreApiClient.getProductById(id);
         return convertDtoToProduct(productDto);
     }
 
     @Override
     public List<Product> getAllProducts() {
-        //List<FakeProductServiceDto> productDtos =restTemplate.getForObject("http://localhost:8080/products", List.class);
-        return List.of();
+        FakeProductServiceDto[] productDtos=fakeStoreApiClient.getAllProducts();
+        return Arrays.stream(productDtos).map(this::convertDtoToProduct).toList();
     }
 
     private Product convertDtoToProduct(FakeProductServiceDto productDto) {
