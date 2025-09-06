@@ -31,6 +31,26 @@ public class FakeStoreProductServiceImpl implements ProductService{
         return Arrays.stream(productDtos).map(this::convertDtoToProduct).toList();
     }
 
+    @Override
+    public Product createProduct(String title, String description, String image, double price, String categoryName) {
+        return null;
+    }
+
+    @Override
+    public Product updatePrice(long productId, double updatedPrice) {
+        return null;
+    }
+
+    @Override
+    public Product updateImage(long productId, String updatedImage) {
+        return null;
+    }
+
+    @Override
+    public boolean deleteProduct(long id) {
+        return false;
+    }
+
     private Product convertDtoToProduct(FakeProductServiceDto productDto) {
         Product product = new Product();
         product.setId(productDto.getId());

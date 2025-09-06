@@ -1,10 +1,12 @@
 package org.example.productservice.controllers;
 
+import org.example.productservice.dtos.CreateProductRequestDto;
+import org.example.productservice.dtos.UpdateProductImageRequestDto;
+import org.example.productservice.dtos.UpdateProductPriceRequestDto;
 import org.example.productservice.models.Product;
 import org.example.productservice.services.ProductService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -27,5 +29,25 @@ public class ProductController {
     @GetMapping
     public List<Product> getAllProducts(){
         return productService.getAllProducts();
+    }
+
+    @PostMapping
+    public Product createProduct(@RequestBody CreateProductRequestDto requestDto) {
+        return  productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryName());
+    }
+
+    @PatchMapping("/price/{id}")
+    public Product updateProductPrice(@PathVariable("id") long id, @RequestBody UpdateProductPriceRequestDto requestDto) {
+        return productService.updatePrice(id,requestDto.getPrice());
+    }
+
+    @PatchMapping("/image/{id}")
+    public Product updateProductImage(@PathVariable("id") long id, @RequestBody UpdateProductImageRequestDto requestDto) {
+        return productService.updateImage(id,requestDto.getImage());
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteProductById(@PathVariable("id") long id) {
+        boolean result= productService.deleteProduct(id);
     }
 }
