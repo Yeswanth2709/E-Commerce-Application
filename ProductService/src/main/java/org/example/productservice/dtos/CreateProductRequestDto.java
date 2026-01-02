@@ -8,5 +8,5 @@ public class CreateProductRequestDto {
     private double price;
     private String description;
     private String image;
-    private String categoryName;
+    private long categoryId;
 }

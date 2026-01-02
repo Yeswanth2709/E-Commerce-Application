@@ -9,17 +9,13 @@ import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
-    @Override
-    public Category getCategoryByName(String name) {
-        Optional<Category> optionalCategory = categoryRepository.findCategoryByName(name);
-        return optionalCategory.orElse(null);
-    }
+
 
     @Override
     public Category getCategoryById(Long id) {

@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Primary
 @Service
 public class SelfProductService implements ProductService {
@@ -21,17 +23,18 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product getProductById(long id) {
-        return null;
+        Optional<Product> optionalProduct = productRepository.findById(id);
+        return optionalProduct.orElse(null);
     }
 
     @Override
     public List<Product> getAllProducts() {
-        return List.of();
+        return productRepository.findAll();
     }
 
     @Override
-    public Product createProduct(String title, String description, String image, double price, String categoryName) {
-        Category category = categoryService.createCategory(categoryName);
+    public Product createProduct(String title, String description, String image, double price, long categoryId) {
+        Category category = categoryService.getCategoryById(categoryId);
         Product product = new Product();
         product.setCategory(category);
         product.setTitle(title);
@@ -44,16 +47,21 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product updatePrice(long productId, double updatedPrice) {
-        return null;
+        Product product = getProductById(productId);
+        product.setPrice(updatedPrice);
+        return productRepository.save(product);
     }
 
     @Override
     public Product updateImage(long productId, String updatedImage) {
-        return null;
+        Product product = getProductById(productId);
+        product.setImage(updatedImage);
+        return productRepository.save(product);
     }
 
     @Override
     public boolean deleteProduct(long id) {
-        return false;
+        productRepository.deleteById(id);
+        return true;
     }
 }

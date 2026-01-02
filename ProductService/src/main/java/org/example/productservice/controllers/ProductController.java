@@ -33,7 +33,7 @@ public class ProductController {
 
     @PostMapping
     public Product createProduct(@RequestBody CreateProductRequestDto requestDto) {
-        return  productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryName());
+        return  productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryId());
     }
 
     @PatchMapping("/price/{id}")
