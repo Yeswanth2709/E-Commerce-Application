@@ -1,5 +1,6 @@
 package org.example.productservice.services;
 
+import org.example.productservice.exceptions.ProductNotFoundException;
 import org.example.productservice.models.Category;
 import org.example.productservice.models.Product;
 import org.example.productservice.repositories.ProductRepository;
@@ -23,8 +24,9 @@ public class SelfProductService implements ProductService {
 
     @Override
     public Product getProductById(long id) {
-        Optional<Product> optionalProduct = productRepository.findById(id);
-        return optionalProduct.orElse(null);
+        return productRepository
+                .findById(id)
+                .orElseThrow(()->new ProductNotFoundException(id));
     }
 
     @Override
@@ -61,6 +63,9 @@ public class SelfProductService implements ProductService {
 
     @Override
     public boolean deleteProduct(long id) {
+        if(!productRepository.existsById(id)){
+            throw new ProductNotFoundException(id);
+        }
         productRepository.deleteById(id);
         return true;
     }

@@ -1,5 +1,6 @@
 package org.example.productservice.controllers;
 
+import jakarta.validation.Valid;
 import org.example.productservice.dtos.CreateProductRequestDto;
 import org.example.productservice.dtos.UpdateProductImageRequestDto;
 import org.example.productservice.dtos.UpdateProductPriceRequestDto;
@@ -32,17 +33,17 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@RequestBody CreateProductRequestDto requestDto) {
+    public Product createProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
         return  productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryId());
     }
 
     @PatchMapping("/price/{id}")
-    public Product updateProductPrice(@PathVariable("id") long id, @RequestBody UpdateProductPriceRequestDto requestDto) {
+    public Product updateProductPrice(@PathVariable("id") long id, @Valid @RequestBody UpdateProductPriceRequestDto requestDto) {
         return productService.updatePrice(id,requestDto.getPrice());
     }
 
     @PatchMapping("/image/{id}")
-    public Product updateProductImage(@PathVariable("id") long id, @RequestBody UpdateProductImageRequestDto requestDto) {
+    public Product updateProductImage(@PathVariable("id") long id, @Valid @RequestBody UpdateProductImageRequestDto requestDto) {
         return productService.updateImage(id,requestDto.getImage());
     }
 

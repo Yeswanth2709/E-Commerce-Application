@@ -1,11 +1,11 @@
 package org.example.productservice.services;
 
+import org.example.productservice.exceptions.CategoryNotFoundException;
 import org.example.productservice.models.Category;
 import org.example.productservice.repositories.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
@@ -19,8 +19,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public Category getCategoryById(Long id) {
-        Optional<Category> optionalCategory = categoryRepository.findById(id);
-        return optionalCategory.orElse(null);
+        return categoryRepository
+                .findById(id)
+                .orElseThrow(()->new CategoryNotFoundException(id));
     }
 
 
@@ -45,6 +46,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public boolean deleteCategory(long id) {
+        if(!categoryRepository.existsById(id)){
+            throw new CategoryNotFoundException(id);
+        }
         categoryRepository.deleteById(id);
         return true;
     }

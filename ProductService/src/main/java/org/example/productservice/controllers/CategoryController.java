@@ -1,5 +1,6 @@
 package org.example.productservice.controllers;
 
+import jakarta.validation.Valid;
 import org.example.productservice.dtos.CreateCategoryRequestDto;
 import org.example.productservice.dtos.UpdateCategoryRequestDto;
 import org.example.productservice.models.Category;
@@ -30,12 +31,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Category createCategory(@RequestBody CreateCategoryRequestDto requestDto) {
+    public Category createCategory(@Valid  @RequestBody CreateCategoryRequestDto requestDto) {
         return categoryService.createCategory(requestDto.getName());
     }
 
     @PatchMapping("/{id}")
-    public Category updateCategory(@PathVariable long id, @RequestBody UpdateCategoryRequestDto requestDto) {
+    public Category updateCategory(@PathVariable long id, @Valid @RequestBody UpdateCategoryRequestDto requestDto) {
         return categoryService.updateCategory(id, requestDto.getName());
     }
 
