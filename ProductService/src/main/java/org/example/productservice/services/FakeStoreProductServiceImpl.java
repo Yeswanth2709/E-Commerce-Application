@@ -1,12 +1,10 @@
 package org.example.productservice.services;
 
 import org.example.productservice.clients.fakeStore.FakeStoreApiClient;
-import org.example.productservice.configs.RestTemplateConfig;
 import org.example.productservice.dtos.FakeProductServiceDto;
 import org.example.productservice.models.Category;
 import org.example.productservice.models.Product;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,21 +31,37 @@ public class FakeStoreProductServiceImpl implements ProductService{
 
     @Override
     public Product createProduct(String title, String description, String image, double price, long categoryId) {
-        return null;
+        FakeProductServiceDto fakeProductServiceDtoReq=new FakeProductServiceDto();
+        fakeProductServiceDtoReq.setTitle(title);
+        fakeProductServiceDtoReq.setDescription(description);
+        fakeProductServiceDtoReq.setImage(image);
+        fakeProductServiceDtoReq.setPrice(price);
+        FakeProductServiceDto fakeProduct = fakeStoreApiClient.createProduct(fakeProductServiceDtoReq);
+        return convertDtoToProduct(fakeProduct);
     }
 
     @Override
     public Product updatePrice(long productId, double updatedPrice) {
-        return null;
+        FakeProductServiceDto fakeProductServiceDtoReq=fakeStoreApiClient.getProductById(productId);
+        fakeProductServiceDtoReq.setPrice(updatedPrice);
+        FakeProductServiceDto fakeProductServiceDto = fakeStoreApiClient.updateProduct(productId,fakeProductServiceDtoReq);
+        return convertDtoToProduct(fakeProductServiceDto);
     }
 
     @Override
     public Product updateImage(long productId, String updatedImage) {
-        return null;
+        FakeProductServiceDto fakeProductServiceDtoReq=fakeStoreApiClient.getProductById(productId);
+        fakeProductServiceDtoReq.setImage(updatedImage);
+        FakeProductServiceDto fakeProductServiceDto = fakeStoreApiClient.updateProduct(productId,fakeProductServiceDtoReq);
+        return convertDtoToProduct(fakeProductServiceDto);
     }
 
     @Override
     public boolean deleteProduct(long id) {
+        FakeProductServiceDto fakeProductServiceDto=fakeStoreApiClient.deleteProduct(id);
+        if (fakeProductServiceDto!=null){
+            return true;
+        }
         return false;
     }
 

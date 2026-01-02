@@ -30,4 +30,36 @@ public class FakeStoreApiClientWebClientImpl implements FakeStoreApiClient {
                 .uri(BASE_URL).retrieve()
                 .bodyToMono(FakeProductServiceDto[].class).block();
     }
+
+    @Override
+    public FakeProductServiceDto createProduct(FakeProductServiceDto fakeProductServiceDtoReq) {
+        return webClient
+                .post()
+                .uri(BASE_URL)
+                .bodyValue(fakeProductServiceDtoReq)
+                .retrieve()
+                .bodyToMono(FakeProductServiceDto.class)
+                .block();
+    }
+
+    @Override
+    public FakeProductServiceDto updateProduct(long id, FakeProductServiceDto fakeProductServiceDtoReq) {
+        return webClient
+                .put()
+                .uri(BASE_URL+"/{id}",id)
+                .bodyValue(fakeProductServiceDtoReq)
+                .retrieve()
+                .bodyToMono(FakeProductServiceDto.class)
+                .block();
+    }
+
+    @Override
+    public FakeProductServiceDto deleteProduct(long id) {
+        return webClient
+                .delete()
+                .uri(BASE_URL+"/{id}",id)
+                .retrieve()
+                .bodyToMono(FakeProductServiceDto.class)
+                .block();
+    }
 }
