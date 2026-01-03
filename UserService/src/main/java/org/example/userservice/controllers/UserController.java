@@ -27,7 +27,8 @@ public class UserController {
     @PostMapping("/signup")
     public ResponseEntity<User> signUp(@RequestBody SignUpRequestDto requestDto){
         try{
-            return new ResponseEntity<>(null, HttpStatusCode.valueOf(201));
+            User user=userService.signup(requestDto.getName(),requestDto.getEmail(),requestDto.getPassword());
+            return new ResponseEntity<>(user, HttpStatusCode.valueOf(201));
         }catch (Exception ex){
             return new ResponseEntity<>(HttpStatusCode.valueOf(400));
         }
@@ -36,7 +37,8 @@ public class UserController {
     @PostMapping ("/login")
     public ResponseEntity<Token> login(@RequestBody LoginRequestDto requestDto){
         try{
-            return new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
+            Token token=userService.login(requestDto.getEmail(),requestDto.getPassword());
+            return new ResponseEntity<>(token, HttpStatusCode.valueOf(200));
         }catch (Exception ex){
             return new ResponseEntity<>(HttpStatusCode.valueOf(400));
         }
@@ -45,7 +47,8 @@ public class UserController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody LogoutRequestDto requestDto){
         try{
-            return new ResponseEntity<>(null, HttpStatusCode.valueOf(200));
+            this.userService.logout(requestDto.getToken());
+            return new ResponseEntity<>(HttpStatusCode.valueOf(200));
         }catch (Exception ex){
             return new ResponseEntity<>(HttpStatusCode.valueOf(400));
         }

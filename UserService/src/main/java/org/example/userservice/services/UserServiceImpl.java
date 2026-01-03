@@ -1,7 +1,9 @@
 package org.example.userservice.services;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.example.userservice.exceptions.ExpiredTokenException;
 import org.example.userservice.exceptions.InvalidTokenException;
+import org.example.userservice.exceptions.PasswordMissMatchException;
 import org.example.userservice.models.Token;
 import org.example.userservice.models.User;
 import org.example.userservice.repositories.TokenRepository;
@@ -9,6 +11,8 @@ import org.example.userservice.repositories.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -40,12 +44,40 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Token login(String email, String password) throws Exception {
-        return null;
+        Optional<User> optionalUser=userRepository.findUserByEmail(email);
+        User user=optionalUser.orElseThrow(()->new Exception("User not found"));
+
+        boolean matches = this.bCryptPasswordEncoder.matches(password,user.getPassword());
+        if(matches){
+            String value = RandomStringUtils.randomAlphanumeric(128);
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.DATE, 30);
+            Date thirtyDaysLater =c.getTime();
+
+            Token token = new Token();
+            token.setUser(user);
+            token.setValue(value);
+            token.setExpiresAt(thirtyDaysLater);
+            token.setActive(true);
+            return this.tokenRepository.save(token);
+        }else{
+            throw new PasswordMissMatchException("Password is incorrect");
+        }
     }
 
     @Override
     public Token validateToken(String tokenValue) throws InvalidTokenException, ExpiredTokenException {
-        return null;
+        Optional<Token> tokenByValue = this.tokenRepository.findTokenByValue(tokenValue);
+
+        Token token = tokenByValue.orElseThrow(() -> new InvalidTokenException("Please use a valid token"));
+
+        Date expiresAt = token.getExpiresAt();
+        Date now = new Date();
+        // If now is greater than expires at
+        if(now.after(expiresAt) || !token.isActive()){
+            throw new ExpiredTokenException("The token has expired");
+        }
+        return token;
     }
 
     @Override

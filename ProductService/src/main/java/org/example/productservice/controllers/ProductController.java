@@ -1,11 +1,14 @@
 package org.example.productservice.controllers;
 
 import jakarta.validation.Valid;
+import org.example.productservice.components.AuthUtils;
 import org.example.productservice.dtos.CreateProductRequestDto;
 import org.example.productservice.dtos.UpdateProductImageRequestDto;
 import org.example.productservice.dtos.UpdateProductPriceRequestDto;
 import org.example.productservice.models.Product;
 import org.example.productservice.services.ProductService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +19,10 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-
-    public ProductController(ProductService productService) {
+    private final AuthUtils authUtils;
+    public ProductController(ProductService productService,AuthUtils authUtils) {
         this.productService = productService;
+        this.authUtils=authUtils;
     }
 
 
@@ -33,8 +37,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public Product createProduct(@Valid @RequestBody CreateProductRequestDto requestDto) {
-        return  productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryId());
+    public ResponseEntity<Product> createProduct(@Valid @RequestBody CreateProductRequestDto requestDto,@RequestHeader("Auth") String token) {
+        if(!authUtils.validateToken(token)){
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        }
+        Product product = productService.createProduct(requestDto.getTitle(),requestDto.getDescription(),requestDto.getImage(),requestDto.getPrice(),requestDto.getCategoryId());
+        return new ResponseEntity<>(product, HttpStatus.CREATED);
     }
 
     @PatchMapping("/price/{id}")
