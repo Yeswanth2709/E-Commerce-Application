@@ -4,6 +4,7 @@ import org.example.productservice.clients.fakeStore.FakeStoreApiClient;
 import org.example.productservice.dtos.FakeProductServiceDto;
 import org.example.productservice.models.Category;
 import org.example.productservice.models.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -24,9 +25,10 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public List<Product> getAllProducts() {
+    public Page<Product> getAllProducts(int pageSize, int pageNumber)  {
         FakeProductServiceDto[] productDtos=fakeStoreApiClient.getAllProducts();
-        return Arrays.stream(productDtos).map(this::convertDtoToProduct).toList();
+        List<Product> products= Arrays.stream(productDtos).map(this::convertDtoToProduct).toList();
+        return null;
     }
 
     @Override

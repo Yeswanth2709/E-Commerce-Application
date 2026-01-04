@@ -2,9 +2,7 @@ package org.example.productservice.controllers;
 
 import jakarta.validation.Valid;
 import org.example.productservice.components.AuthUtils;
-import org.example.productservice.dtos.CreateProductRequestDto;
-import org.example.productservice.dtos.UpdateProductImageRequestDto;
-import org.example.productservice.dtos.UpdateProductPriceRequestDto;
+import org.example.productservice.dtos.*;
 import org.example.productservice.models.Product;
 import org.example.productservice.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -31,9 +29,13 @@ public class ProductController {
         return productService.getProductById(id);
     }
 
-    @GetMapping
-    public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+    @GetMapping()
+    public ResponseEntity<ProductsResponseDto> getAllProducts(@RequestParam(value="pageSize",defaultValue = "10") int pageSize,
+                                                              @RequestParam(value="pageNum",defaultValue = "0") int pageNum) {
+        ProductsResponseDto responseDto = new ProductsResponseDto();
+        responseDto.setProductList(productService.getAllProducts(pageSize,pageNum));
+        responseDto.setResponse(Response.getSuccessResponse());
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @PostMapping
