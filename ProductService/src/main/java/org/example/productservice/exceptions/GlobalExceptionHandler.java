@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ApiErrorResponse> handleGenericException(Exception ex){
-    ApiErrorResponse error=new ApiErrorResponse("Internal server error",HttpStatus.INTERNAL_SERVER_ERROR.value());
+    ApiErrorResponse error=new ApiErrorResponse(ex.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR.value());
     return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
